@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,7 +32,9 @@ public class ClientController {
 	
 	
 	@PostMapping("/createClient")
-	public void createClient(@RequestBody Client client) {
-		clientService.addClient(client);
+	public void createClient(
+			@RequestParam(name = "name")String name, 
+			@RequestParam(name = "pass")String pass) {
+		clientService.addClient(new Client(name, pass));
 	}
 }
