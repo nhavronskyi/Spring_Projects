@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Configuration;
 public class ClientConfig {
 	
 	@Bean
-	CommandLineRunner commandLineRunner(ClientsRepository clientsRepository) {
+	CommandLineRunner commandLineRunner(ClientRepository clientsRepository) {
 		return args -> {
-			Clients defaultU = new Clients("default", "000");
+			Client defaultU = new Client("default", "000");
 			clientsRepository.save(defaultU);
 		};
 	}

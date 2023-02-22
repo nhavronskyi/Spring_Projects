@@ -10,30 +10,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ClientsController {
+public class ClientController {
+	
+	private final ClientService clientService;
 	
 	@RequestMapping("/hello")
 	public String showHello() {
 		return "Hello client";
 	}
 	
-	
-	
-	private final ClientService clientService;
-	
 	@Autowired
-	public ClientsController(ClientService clientService) {
+	public ClientController(ClientService clientService) {
 		this.clientService = clientService;
 	}
 	
 	@GetMapping("/getClients")
-	public List<Clients> getClients(){
+	public List<Client> getClients(){
 		return clientService.getClients();
 	}
 	
 	
 	@PostMapping("/createClient")
-	public void createClient(@RequestBody Clients client) {
+	public void createClient(@RequestBody Client client) {
 		clientService.addClient(client);
 	}
 }

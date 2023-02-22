@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table
-public class Clients {
+public class Client {
 	@Id
 	@SequenceGenerator(
 			name = "clients_sequence",
@@ -28,11 +28,11 @@ public class Clients {
 	
 	private String pass;
 	
-	public Clients() {
+	public Client() {
 		
 	}
 	
-	public Clients(String name, String pass) {
+	public Client(String name, String pass) {
 		this.name = name;
 		this.pass = pass;
 	}
@@ -55,6 +55,6 @@ public class Clients {
 
 	@Override
 	public String toString() {
-		return "Clients [id=" + id + ", name=" + name + ", pass=" + pass + "]";
+		return "Client [id=" + id + ", name=" + name + ", pass=" + pass + "]";
 	}
 }

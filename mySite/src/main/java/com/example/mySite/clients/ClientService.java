@@ -7,18 +7,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ClientService {
-	private final ClientsRepository clientsRepository;
+	private final ClientRepository clientsRepository;
 
 	@Autowired
-	public ClientService(ClientsRepository clientsRepository) {
+	public ClientService(ClientRepository clientsRepository) {
 		this.clientsRepository = clientsRepository;
 	}
 	
-	public List<Clients> getClients(){
+	public List<Client> getClients(){
 		return clientsRepository.findAll();
 	}
 
-	public void addClient(Clients client) {
+	public void addClient(Client client) {
 		clientsRepository.save(client);
 	}
 }
