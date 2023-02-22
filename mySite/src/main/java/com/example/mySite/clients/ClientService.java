@@ -20,6 +20,5 @@ public class ClientService {
 
 	public void addClient(Clients client) {
 		clientsRepository.save(client);
-//		System.out.println(client);
 	}
 }
