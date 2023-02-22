@@ -1,5 +1,13 @@
 package com.example.mySite.clients;
 
-public class ClientsController {
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
+public class ClientsController {
+	
+	@RequestMapping("/hello")
+	public String showHello() {
+		return "Hello client";
+	}
 }
