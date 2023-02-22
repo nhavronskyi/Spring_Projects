@@ -24,7 +24,7 @@ public class Client {
 			)
 	private long id;
 	
-	private String name;
+	private String login;
 	
 	private String pass;
 	
@@ -32,17 +32,17 @@ public class Client {
 		
 	}
 	
-	public Client(String name, String pass) {
-		this.name = name;
+	public Client(String login, String pass) {
+		this.login = login;
 		this.pass = pass;
 	}
 
-	public String getName() {
-		return name;
+	public String getLogin() {
+		return login;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setLogin(String login) {
+		this.login = login;
 	}
 
 	public String getPass() {
@@ -55,6 +55,6 @@ public class Client {
 
 	@Override
 	public String toString() {
-		return "Client [id=" + id + ", name=" + name + ", pass=" + pass + "]";
+		return "Client [id=" + id + ", login=" + login + ", pass=" + pass + "]";
 	}
 }

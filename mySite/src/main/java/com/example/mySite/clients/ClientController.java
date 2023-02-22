@@ -33,9 +33,9 @@ public class ClientController {
 	
 	@PostMapping("/createClient")
 	public void createClient(
-			@RequestParam(name = "name")String name, 
+			@RequestParam(name = "login")String login, 
 			@RequestParam(name = "pass")String pass) {
-		clientService.addClient(new Client(name, pass));
+		clientService.addClient(new Client(login, pass));
 	}
 	
 	
