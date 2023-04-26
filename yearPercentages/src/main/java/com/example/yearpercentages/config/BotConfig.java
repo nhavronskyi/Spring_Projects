@@ -1,27 +1,29 @@
 package com.example.yearpercentages.config;
 
 
-import com.example.yearpercentages.service.BotService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.yearpercentages.service.Bot;
+import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @Configuration
 public class BotConfig {
 
-    @Autowired
-    private BotService botService;
+
+    private final Bot botService;
+
+    public BotConfig(Bot botService) {
+        this.botService = botService;
+    }
+
+    TelegramBotsApi telegramBotsApi;
 
     @Bean
+    @SneakyThrows
     public void startBot(){
-        try {
-            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(botService);
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
-        }
+        telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+        telegramBotsApi.registerBot(botService);
     }
 }
