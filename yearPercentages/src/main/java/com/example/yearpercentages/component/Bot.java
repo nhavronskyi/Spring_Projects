@@ -53,7 +53,7 @@ public class Bot extends TelegramLongPollingBot {
     public void showUpdated(){
         if(update!=null) {
             if (update.hasMessage() && update.getMessage().getText().equals("/start")) {
-                sendApiMethodAsync(showMessage(showDateInPercentages() + " " + update.getMessage().getText()));
+                sendApiMethodAsync(showMessage(showDateInPercentages()));
             } else if (update.hasMessage() && update.getMessage().getText().equals("/stop")) {
                 sendApiMethodAsync(showMessage("stopped"));
                 scheduler.shutdown();
