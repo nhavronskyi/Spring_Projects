@@ -1,29 +1,18 @@
 package com.example.yearpercentages.config;
 
 
-import com.example.yearpercentages.service.Bot;
-import lombok.SneakyThrows;
+import com.example.yearpercentages.botService.BotService;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @Configuration
+@AllArgsConstructor
 public class BotConfig {
 
-
-    private final Bot botService;
-
-    public BotConfig(Bot botService) {
-        this.botService = botService;
-    }
-
-    TelegramBotsApi telegramBotsApi;
-
+    BotService botService;
     @Bean
-    @SneakyThrows
-    public void startBot(){
-        telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(botService);
+    public void starter(){
+        botService.startBot();
     }
 }

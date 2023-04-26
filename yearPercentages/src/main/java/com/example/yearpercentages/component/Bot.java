@@ -1,4 +1,4 @@
-package com.example.yearpercentages.service;
+package com.example.yearpercentages.component;
 
 
 import com.example.yearpercentages.config.DataConfig;
