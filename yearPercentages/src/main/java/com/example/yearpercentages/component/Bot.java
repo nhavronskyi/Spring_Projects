@@ -42,8 +42,6 @@ public class Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         this.update = update;
         showUpdated();
-
-        showMessage("end");
     }
 
     private Update update;
