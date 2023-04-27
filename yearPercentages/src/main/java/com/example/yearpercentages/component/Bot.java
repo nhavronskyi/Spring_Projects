@@ -1,62 +1,66 @@
 package com.example.yearpercentages.component;
 
 
-import com.example.yearpercentages.config.DataConfig;
-import lombok.NonNull;
+import com.example.yearpercentages.config.TelegramProps;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Component
-@PropertySource("classpath:application.properties")
 @RequiredArgsConstructor
 public class Bot extends TelegramLongPollingBot {
 
-    private final DataConfig dataConfig;
+    @Getter
+    private Map<Long, String> map = new HashMap<>();
 
+    private long chatId;
 
-    @NonNull
-    private ThreadPoolTaskScheduler scheduler;
+    private final TelegramProps telegramProps;
+
     @Override
     public String getBotUsername() {
-        return dataConfig.getName();
+        return telegramProps.getName();
     }
     @Override
     public String getBotToken() {
-        return dataConfig.getToken();
+        return telegramProps.getToken();
     }
 
     @Override
     @SneakyThrows
     public void onUpdateReceived(Update update) {
-        this.update = update;
-        showUpdated();
+        chatId = update.getMessage().getChatId();
+        map.put(chatId, update.getMessage().getChat().getUserName());
+        Message message = new Message();
+        if (update.hasMessage() && update.getMessage().getText().equals("/start")) {
+            message.setText("/start");
+            update.setMessage(message);
+            showDays();
+
+        }
+        // TODO: 27.04.2023 make it work
+        else if (update.hasMessage() && update.getMessage().getText().equals("/stop")) {
+            message.setText("/stop");
+            update.setMessage(message);
+            sendApiMethodAsync(showMessage("final"));
+        }
     }
 
-    private Update update;
-
-    @SneakyThrows
-    @Scheduled(fixedRate = 5000)
-    public void showUpdated(){
-        if(update!=null) {
-            if (update.hasMessage() && update.getMessage().getText().equals("/start")) {
-                sendApiMethodAsync(showMessage(showDateInPercentages()));
-            } else if (update.hasMessage() && update.getMessage().getText().equals("/stop")) {
-                sendApiMethodAsync(showMessage("stopped"));
-                scheduler.shutdown();
-            }
-        }
+    @Scheduled(fixedRate = 20_000)
+    public void showDays(){
+        sendApiMethodAsync(showMessage(showDateInPercentages()));
     }
 
 
@@ -71,9 +75,8 @@ public class Bot extends TelegramLongPollingBot {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(message);
 
-        sendMessage.setChatId(Objects.requireNonNull(dataConfig.getChildId()));
+        sendMessage.setChatId(chatId);
 
         return sendMessage;
     }
-
 }
