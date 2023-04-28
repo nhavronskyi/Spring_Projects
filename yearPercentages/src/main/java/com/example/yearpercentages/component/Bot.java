@@ -2,9 +2,12 @@ package com.example.yearpercentages.component;
 
 
 import com.example.yearpercentages.config.TelegramProps;
+import com.example.yearpercentages.repository.UserRepository;
+import com.example.yearpercentages.user.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -22,8 +25,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class Bot extends TelegramLongPollingBot {
 
-    @Getter
-    private Map<Long, String> map = new HashMap<>();
+    @Autowired
+    private UserRepository userRepository;
 
     private long chatId;
 
@@ -42,13 +45,10 @@ public class Bot extends TelegramLongPollingBot {
     @SneakyThrows
     public void onUpdateReceived(Update update) {
         chatId = update.getMessage().getChatId();
-        map.put(chatId, update.getMessage().getChat().getUserName());
+        userRepository.save(new User(chatId,update.getMessage().getChat().getUserName(),true));
         Message message = new Message();
         if (update.hasMessage() && update.getMessage().getText().equals("/start")) {
-            message.setText("/start");
-            update.setMessage(message);
             showDays();
-
         }
         // TODO: 27.04.2023 make it work
         else if (update.hasMessage() && update.getMessage().getText().equals("/stop")) {

@@ -4,15 +4,15 @@ services:
      build: .
      container_name: app
      depends_on:
-       - users-db
+       - user-db
      ports:
       - target: 8080
-      - published: 8080
+        published: 8080
      environment:
-       - SPRING_URL=jdbc:postgresql://users-db:5432/postgres
-       - STRING_USER=postgres
-       - STRING_PASSWORD=root
-   users-db:
+       - SPRING_DATASOURCE_URL=jdbc:postgresql://user-db:5432/postgres
+       - STRING_DATASOURCE_USERNAME=postgres
+       - STRING_DATASOURCE_PASSWORD=root
+   user-db:
      image: postgres
      container_name: user-db
      environment:
