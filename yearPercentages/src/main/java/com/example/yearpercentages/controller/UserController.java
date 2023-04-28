@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/show")
 public class UserController {
 
     @Autowired

@@ -41,24 +41,26 @@ public class Bot extends TelegramLongPollingBot {
         return telegramProps.getToken();
     }
 
+    private boolean isStarted = true;
     @Override
     @SneakyThrows
     public void onUpdateReceived(Update update) {
         chatId = update.getMessage().getChatId();
-        userRepository.save(new User(chatId,update.getMessage().getChat().getUserName(),true));
-        Message message = new Message();
-        if (update.hasMessage() && update.getMessage().getText().equals("/start")) {
-            showDays();
-        }
-        // TODO: 27.04.2023 make it work
-        else if (update.hasMessage() && update.getMessage().getText().equals("/stop")) {
-            message.setText("/stop");
-            update.setMessage(message);
-            sendApiMethodAsync(showMessage("final"));
+        userRepository.save(new User(chatId,update.getMessage().getChat().getUserName(),isStarted));
+        if(isStarted) {
+            if (update.hasMessage() && update.getMessage().getText().equals("/start")) {
+                showDays();
+            }
+            // TODO: 27.04.2023 make it work
+            else if (update.hasMessage() && update.getMessage().getText().equals("/stop")) {
+                isStarted = false;
+                userRepository.save(new User(chatId,update.getMessage().getChat().getUserName(),isStarted));
+                sendApiMethodAsync(showMessage("final"));
+            }
         }
     }
 
-    @Scheduled(fixedRate = 20_000)
+    @Scheduled(fixedRate = 3_000)
     public void showDays(){
         sendApiMethodAsync(showMessage(showDateInPercentages()));
     }
