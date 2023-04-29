@@ -14,9 +14,10 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class BotConfig {
 
     private final Bot bot;
+
     @Bean
     @SneakyThrows
-    public void starter(){
+    public void starter() {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(bot);
     }
