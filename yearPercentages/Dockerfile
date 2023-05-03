@@ -1,4 +1,4 @@
-FROM maven
+FROM maven:3.6.0-jdk-11-slim
 RUN mvn clean package
 
 FROM openjdk:17.0.2-jdk-slim-buster
