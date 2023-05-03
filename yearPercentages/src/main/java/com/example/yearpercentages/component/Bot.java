@@ -40,10 +40,10 @@ public class Bot extends TelegramLongPollingBot {
         Message message = update.getMessage();
         String usersMessage = message.getText();
 
-        User user = new User(message.getChatId(), message.getChat().getUserName(), true);
-        if (usersMessage.equals("/start")) user.setStarted(true);
-        else if (usersMessage.equals("/stop")) user.setStarted(false);
-        userDao.save(user);
+        if(usersMessage.equals("/start") || usersMessage.equals("/stop")) {
+            User user = new User(message.getChatId(), message.getChat().getUserName(), usersMessage.equals("/start"));
+            userDao.save(user);
+        }
     }
 
     @Scheduled(cron = "0 0 8 * * *") // sends a message every day at 08:00 AM
