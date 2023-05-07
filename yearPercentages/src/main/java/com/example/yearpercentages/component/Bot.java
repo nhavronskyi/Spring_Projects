@@ -1,79 +1,70 @@
 package com.example.yearpercentages.component;
 
 
-import com.example.yearpercentages.config.DataConfig;
-import lombok.NonNull;
+import com.example.yearpercentages.config.TelegramProps;
+import com.example.yearpercentages.dao.UserDao;
+import com.example.yearpercentages.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.Objects;
 
 
 @Component
-@PropertySource("classpath:application.properties")
 @RequiredArgsConstructor
 public class Bot extends TelegramLongPollingBot {
 
-    private final DataConfig dataConfig;
+    private final UserDao userDao;
+    private final TelegramProps telegramProps;
 
-
-    @NonNull
-    private ThreadPoolTaskScheduler scheduler;
     @Override
     public String getBotUsername() {
-        return dataConfig.getName();
+        return telegramProps.getName();
     }
+
     @Override
     public String getBotToken() {
-        return dataConfig.getToken();
+        return telegramProps.getToken();
     }
 
     @Override
     @SneakyThrows
     public void onUpdateReceived(Update update) {
-        this.update = update;
-        showUpdated();
-    }
+        Message message = update.getMessage();
+        String usersMessage = message.getText();
 
-    private Update update;
-
-    @SneakyThrows
-    @Scheduled(fixedRate = 5000)
-    public void showUpdated(){
-        if(update!=null) {
-            if (update.hasMessage() && update.getMessage().getText().equals("/start")) {
-                sendApiMethodAsync(showMessage(showDateInPercentages()));
-            } else if (update.hasMessage() && update.getMessage().getText().equals("/stop")) {
-                sendApiMethodAsync(showMessage("stopped"));
-                scheduler.shutdown();
-            }
+        if(usersMessage.equals("/start") || usersMessage.equals("/stop")) {
+            User user = new User(message.getChatId(), message.getChat().getUserName(), usersMessage.equals("/start"));
+            userDao.save(user);
         }
     }
 
+    @Scheduled(cron = "0 0 8 * * *") // sends a message every day at 08:00 AM
+    private void showDays() {
+        userDao.findAllByIsStartedIsTrue()
+                .forEach(user -> sendApiMethodAsync(showMessage(showDateInPercentages(), user.getId())));
+    }
 
-    private String showDateInPercentages(){
-        double percentage = LocalDate.now().getDayOfYear() /365.0 * 100.0;
+    private String showDateInPercentages() {
+        double percentage = LocalDate.now().getDayOfYear() / 365.0 * 100.0;
 
         return new DecimalFormat("###.#").format(percentage) + "% / 100%  -> "
                 + LocalDate.now().getDayOfYear() + " / 365";
     }
 
-    private SendMessage showMessage(String message){
+    private SendMessage showMessage(String message, Long chatId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(message);
 
-        sendMessage.setChatId(Objects.requireNonNull(dataConfig.getChildId()));
+        sendMessage.setChatId(chatId);
 
         return sendMessage;
     }
-
 }
