@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,17 +14,17 @@ public class UserService {
 
     private UserDao userDao;
 
-    public void createUsers(int num){
+    public void createUsers(int num) {
         userDao.deleteAll();
         for (int i = 1; i <= num; i++)
-            userDao.save(new User((long)i, Character.toString(i+64),Character.toString(i+64)));
+            userDao.save(new User((long) i, Character.toString(i + 64), Character.toString(i + 64)));
     }
 
-    public List<User> showAll(){
+    public List<User> showAll() {
         return userDao.findAll();
     }
 
-    public List<User> getUsersWithPagination(int currentPage, int elementsOnPage){
+    public List<User> getUsersWithPagination(int currentPage, int elementsOnPage) {
         return userDao.findAll(PageRequest.of(currentPage, elementsOnPage)).stream().toList();
     }
 }

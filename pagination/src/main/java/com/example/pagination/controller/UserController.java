@@ -14,18 +14,18 @@ public class UserController {
     private UserService service;
 
     @PostMapping("/{num}")
-    public void createUsers(@PathVariable int num){
+    public void createUsers(@PathVariable int num) {
         service.createUsers(num);
     }
 
     @GetMapping
-    public List<User> getUsers(){
+    public List<User> getUsers() {
         return service.showAll();
     }
 
 
     @GetMapping("/{currentPage}/{elementsOnPage}")
-    public List<User> getUsersWithPagination(@PathVariable int currentPage, @PathVariable int elementsOnPage){
-            return service.getUsersWithPagination(currentPage,elementsOnPage);
+    public List<User> getUsersWithPagination(@PathVariable int currentPage, @PathVariable int elementsOnPage) {
+        return service.getUsersWithPagination(currentPage, elementsOnPage);
     }
 }

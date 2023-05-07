@@ -1,1 +1,2 @@
-alter table users alter column id type bigint;
+alter table users
+    alter column id type bigint;
