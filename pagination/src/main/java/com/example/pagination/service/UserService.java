@@ -25,7 +25,7 @@ public class UserService {
         return userDao.findAll();
     }
 
-    public List<User> getUsersWithPagination(int elementsOnPage, int currentPage){
-        return userDao.findAll(PageRequest.of(elementsOnPage, currentPage)).stream().toList();
+    public List<User> getUsersWithPagination(int currentPage, int elementsOnPage){
+        return userDao.findAll(PageRequest.of(currentPage, elementsOnPage)).stream().toList();
     }
 }
