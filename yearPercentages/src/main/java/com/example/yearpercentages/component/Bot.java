@@ -40,7 +40,7 @@ public class Bot extends TelegramLongPollingBot {
         Message message = update.getMessage();
         String usersMessage = message.getText();
 
-        if(usersMessage.equals("/start") || usersMessage.equals("/stop")) {
+        if (usersMessage.equals("/start") || usersMessage.equals("/stop")) {
             User user = new User(message.getChatId(), message.getChat().getUserName(), usersMessage.equals("/start"));
             userDao.save(user);
         }
