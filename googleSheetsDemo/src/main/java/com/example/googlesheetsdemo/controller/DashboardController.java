@@ -21,9 +21,4 @@ public class DashboardController {
     public Map<String, List<String>> getSchedule(){
         return sheetsQuickstart.getSchedule();
     }
-
-    @PostMapping
-    public void getCalendar(){
-        sheetsQuickstart.getCalendar();
-    }
 }
