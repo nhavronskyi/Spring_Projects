@@ -59,6 +59,7 @@ public class GCloudController {
                     String title = data[0] + " " + data[2];
                     String teacher = data[3].toString();
 
+
                     Object[] time = Arrays.stream(data[1].toString().split("-")).map(String::trim).toArray();
 
                     calendar.createAnEvent(title
