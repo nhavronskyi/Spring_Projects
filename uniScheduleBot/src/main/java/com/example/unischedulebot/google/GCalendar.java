@@ -7,8 +7,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.Events;
+import com.google.api.services.calendar.model.*;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
@@ -18,39 +17,54 @@ import java.util.List;
 
 @Service
 public class GCalendar {
+
+    private Calendar service;
+
     @SneakyThrows
-    public List<String> getEvents(){
-        // Build a new authorized API client service.
+    public GCalendar(){
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         List<String> SCOPES =
-                Collections.singletonList(CalendarScopes.CALENDAR_READONLY);
+                Collections.singletonList(CalendarScopes.CALENDAR);
 
 
         GAuthorisation authorisation = new GAuthorisation();
-        Calendar service =
-                new Calendar.Builder(HTTP_TRANSPORT, authorisation.getJSON_FACTORY(), authorisation.getCredentials(HTTP_TRANSPORT, SCOPES))
+        service =
+                new Calendar.Builder(HTTP_TRANSPORT, authorisation.getJSON_FACTORY(), authorisation.getCredentials(SCOPES))
                         .setApplicationName("Google GCalendar API Java Quickstart")
                         .build();
-
+    }
+    @SneakyThrows
+    public List<String> getEvents(){
         DateTime now = new DateTime(System.currentTimeMillis());
-        Events events = service.events().list("primary")
+
+        // get all calendars
+        Events events = service.events().list("nhavronskyi@gmail.com")
                 .setMaxResults(10)
                 .setTimeMin(now)
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
                 .execute();
+
         List<Event> items = events.getItems();
         List<String> eventsList = new ArrayList<>();
-        if (items.isEmpty()) return List.of("No upcoming events found.");
-        else {
-            for (Event event : items) {
-                DateTime start = event.getStart().getDateTime();
-                if (start == null) {
-                    start = event.getStart().getDate();
-                }
-                eventsList.add(event.getSummary() + " " + start);
+        for (Event event : items) {
+            DateTime start = event.getStart().getDateTime();
+            if (start == null) {
+                start = event.getStart().getDate();
             }
+            eventsList.add(event.getSummary() + " " + start);
         }
         return eventsList;
+    }
+
+    @SneakyThrows
+    public void createAnEvent(String title, String teacher, DateTime start, DateTime end){
+        Event event = new Event()
+                .setSummary(title)
+                .setDescription(teacher)
+                .setStart(new EventDateTime().setTimeZone("Europe/Warsaw").setDateTime(start))
+                .setEnd(new EventDateTime().setTimeZone("Europe/Warsaw").setDateTime(end));
+
+        service.events().insert("nhavronskyi@gmail.com",event).execute();
     }
 }

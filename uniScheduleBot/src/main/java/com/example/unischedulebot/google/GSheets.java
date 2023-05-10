@@ -18,10 +18,10 @@ public class GSheets {
 
     public Map<String, List<String>> getSchedule() {
         return Map.of(
-                "Monday", dayManager("A3:D8"),
-                "Tuesday", dayManager("A10:D11"),
-                "Wednesday", dayManager("A13:D14"),
-                "Friday", dayManager("A16:D18")
+                "MONDAY", dayManager("A3:D8"),
+                "TUESDAY", dayManager("A10:D11"),
+                "WEDNESDAY", dayManager("A13:D14"),
+                "FRIDAY", dayManager("A16:D18")
         );
     }
 
@@ -35,7 +35,7 @@ public class GSheets {
         GAuthorisation autorisation = new GAuthorisation();
 
         Sheets service =
-                new Sheets.Builder(HTTP_TRANSPORT, autorisation.getJSON_FACTORY(), autorisation.getCredentials(HTTP_TRANSPORT, SCOPES))
+                new Sheets.Builder(HTTP_TRANSPORT, autorisation.getJSON_FACTORY(), autorisation.getCredentials(SCOPES))
                         .setApplicationName(APPLICATION_NAME)
                         .build();
         ValueRange response = service.spreadsheets().values()
