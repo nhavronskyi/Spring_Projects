@@ -9,20 +9,20 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Service
 public class GSheets {
 
-    public Map<String, List<String>> getSchedule() {
-        return Map.of(
-                "MONDAY", dayManager("A3:D8"),
-                "TUESDAY", dayManager("A10:D11"),
-                "WEDNESDAY", dayManager("A13:D14"),
-                "FRIDAY", dayManager("A16:D18")
-        );
+    public LinkedHashMap<String, List<String>> getSchedule() {
+        LinkedHashMap<String, List<String>> linkedHashMap = new LinkedHashMap<>();
+        linkedHashMap.put("MONDAY", dayManager("A3:D8"));
+        linkedHashMap.put("TUESDAY", dayManager("A10:D11"));
+        linkedHashMap.put("WEDNESDAY", dayManager("A13:D14"));
+        linkedHashMap.put("FRIDAY", dayManager("A16:D18"));
+        return linkedHashMap;
     }
 
     @SneakyThrows
