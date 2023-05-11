@@ -15,7 +15,8 @@ public class GAuthorisation {
     private final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
     public Credential getCredentials(List<String> SCOPES) throws IOException {
-        return GoogleCredential.fromStream(Objects.requireNonNull(GAuthorisation.class.getResourceAsStream("/credentials.json")))
+        return GoogleCredential
+                .fromStream(Objects.requireNonNull(GAuthorisation.class.getResourceAsStream("/credentials.json")))
                 .createScoped(SCOPES);
     }
 }
