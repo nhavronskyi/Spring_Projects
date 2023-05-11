@@ -59,7 +59,9 @@ public class GSheetsImpl implements GSheets {
             ValueRange response = service.spreadsheets().values()
                     .get(spreadsheetId, "A1:D50")
                     .execute();
-            return response.getValues().stream().map(Object::toString).map(x -> x.replaceAll("\\[", "")).map(x -> x.replaceAll("]", "")).toList();
+            return response.getValues().stream().map(Object::toString)
+                    .map(x -> x.replaceAll("[\\[\\]]", ""))
+                    .toList();
         } catch (Exception e) {
             new SheetsException("day manager exception", e).printStackTrace();
             return null;
