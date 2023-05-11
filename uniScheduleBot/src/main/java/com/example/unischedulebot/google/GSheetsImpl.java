@@ -9,6 +9,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,15 +23,26 @@ public class GSheetsImpl implements GSheets {
 
     public LinkedHashMap<String, List<String>> getSchedule() {
         LinkedHashMap<String, List<String>> linkedHashMap = new LinkedHashMap<>();
-        linkedHashMap.put("MONDAY", dayManager("A3:D8"));
-        linkedHashMap.put("TUESDAY", dayManager("A10:D11"));
-        linkedHashMap.put("WEDNESDAY", dayManager("A13:D14"));
-        linkedHashMap.put("FRIDAY", dayManager("A16:D18"));
+
+        var sheetsData = dayManager();
+
+        for (int i = 0; i < sheetsData.size(); i++) {
+            var day = sheetsData.get(i);
+            if (sheetsData.get(i).length() < 10) {
+                i++;
+                List<String> lessons = new ArrayList<>();
+                while (i < sheetsData.size() && sheetsData.get(i).length() > 9) {
+                    lessons.add(sheetsData.get(i));
+                    i++;
+                }
+                linkedHashMap.put(day, lessons);
+                i--;
+            }
+        }
         return linkedHashMap;
     }
 
-
-    private List<String> dayManager(String range) {
+    private List<String> dayManager() {
         try {
             List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
             final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -43,10 +55,11 @@ public class GSheetsImpl implements GSheets {
                     new Sheets.Builder(HTTP_TRANSPORT, authorisation.getJSON_FACTORY(), authorisation.getCredentials(SCOPES))
                             .setApplicationName(APPLICATION_NAME)
                             .build();
+
             ValueRange response = service.spreadsheets().values()
-                    .get(spreadsheetId, range)
+                    .get(spreadsheetId, "A1:D50")
                     .execute();
-            return response.getValues().stream().map(Object::toString).toList();
+            return response.getValues().stream().map(Object::toString).map(x -> x.replaceAll("\\[", "")).map(x -> x.replaceAll("]", "")).toList();
         } catch (Exception e) {
             new SheetsException("day manager exception", e).printStackTrace();
             return null;

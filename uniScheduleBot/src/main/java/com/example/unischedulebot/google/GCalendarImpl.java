@@ -58,14 +58,29 @@ public class GCalendarImpl implements GCalendar {
         return eventsList;
     }
 
+
+    @SneakyThrows
+    private boolean checkIfExist(String summary){
+        Events events = service.events().list("nhavronskyi@gmail.com")
+                .setMaxResults(20)
+                .setOrderBy("startTime")
+                .setSingleEvents(true)
+                .execute();
+
+        List<Event> items = events.getItems();
+        return items.stream().map(Event::getSummary).anyMatch(e -> e.equals(summary));
+    }
+
     @SneakyThrows
     public void createAnEvent(String title, String teacher, DateTime start, DateTime end) {
-        Event event = new Event()
-                .setSummary(title)
-                .setDescription(teacher)
-                .setStart(new EventDateTime().setTimeZone("Europe/Warsaw").setDateTime(start))
-                .setEnd(new EventDateTime().setTimeZone("Europe/Warsaw").setDateTime(end));
+        if (!checkIfExist(title)) {
+            Event event = new Event()
+                    .setSummary(title)
+                    .setDescription(teacher)
+                    .setStart(new EventDateTime().setTimeZone("Europe/Warsaw").setDateTime(start))
+                    .setEnd(new EventDateTime().setTimeZone("Europe/Warsaw").setDateTime(end));
 
-        service.events().insert("nhavronskyi@gmail.com", event).execute();
+            service.events().insert("nhavronskyi@gmail.com", event).execute();
+        }
     }
 }
