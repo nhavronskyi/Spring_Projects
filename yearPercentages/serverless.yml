@@ -1,0 +1,16 @@
+service: year-percentages
+
+provider:
+  name: aws
+  runtime: java11
+  profile: serverless-admin
+  region: eu-north-1
+  timeout: 10
+  memorySize: 1024
+
+package:
+  artifact: target/yearPercentages-0.0.1-SNAPSHOT.jar
+
+functions:
+  botLambda:
+    handler: com.example.yearpercentages.lambda.BotLambda
