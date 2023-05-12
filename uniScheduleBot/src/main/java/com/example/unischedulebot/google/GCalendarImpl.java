@@ -35,34 +35,35 @@ public class GCalendarImpl implements GCalendar {
     }
 
     @SneakyThrows
-    public List<String> getEvents() {
+    public String getNextEvent() {
         DateTime now = new DateTime(System.currentTimeMillis());
 
         // get all calendars
         Events events = service.events().list("nhavronskyi@gmail.com")
-                .setMaxResults(10)
+                .setMaxResults(1)
                 .setTimeMin(now)
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
                 .execute();
 
-        List<Event> items = events.getItems();
-        List<String> eventsList = new ArrayList<>();
-        for (Event event : items) {
-            DateTime start = event.getStart().getDateTime();
-            if (start == null) {
-                start = event.getStart().getDate();
-            }
-            eventsList.add(event.getSummary() + " " + start);
-        }
-        return eventsList;
+        Event item = events.getItems().get(0);
+        return item.getSummary()
+                + "\n" +
+                item.getStart()
+                        .getDateTime()
+                        .toString().replace(":00.000+02:00","")
+                        .replace("T", " ")
+                + " -> " +
+                item.getEnd()
+                        .getDateTime()
+                        .toString().replace(":00.000+02:00","")
+                        .replace("T", " ");
     }
 
 
     @SneakyThrows
-    private boolean checkIfExist(String summary){
+    private boolean checkIfExist(String summary) {
         Events events = service.events().list("nhavronskyi@gmail.com")
-                .setMaxResults(20)
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
                 .execute();
@@ -77,8 +78,8 @@ public class GCalendarImpl implements GCalendar {
             Event event = new Event()
                     .setSummary(title)
                     .setDescription(teacher)
-                    .setStart(new EventDateTime().setTimeZone("Europe/Warsaw").setDateTime(start))
-                    .setEnd(new EventDateTime().setTimeZone("Europe/Warsaw").setDateTime(end));
+                    .setStart(new EventDateTime().setDateTime(start))
+                    .setEnd(new EventDateTime().setDateTime(end));
 
             service.events().insert("nhavronskyi@gmail.com", event).execute();
         }

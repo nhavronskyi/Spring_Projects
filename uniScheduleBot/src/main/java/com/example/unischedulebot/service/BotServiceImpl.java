@@ -25,14 +25,9 @@ public class BotServiceImpl implements BotService {
                     .stream()
                     .map(x -> x.getKey() + " " + x.getValue().stream().map(y -> "\n" + y + "\n").collect(Collectors.joining()) + "\n\n")
                     .collect(Collectors.joining());
-            case "getEvents" ->
-                    message = gService.getEvents().stream().map(x -> x + "\n\n").collect(Collectors.joining());
-            case "createDemoEvent" -> {
-                gService.createDemoEvent();
-                message = "demo event was created";
-            }
-            case "creatEventsForSchedule" -> {
-                gService.creatEventsForSchedule();
+            case "getNextEvent" -> message = gService.getNextEvent();
+            case "createEventsForSchedule" -> {
+                gService.createEventsForSchedule();
                 message = "events from the schedule have been created";
             }
         }
@@ -50,9 +45,8 @@ public class BotServiceImpl implements BotService {
     public SendMessage buttonHelper(Update update) {
         return buttonManager(Map.of(
                 "getSchedule", "getSchedule",
-                "getEvents", "getEvents",
-                "createDemoEvent", "createDemoEvent",
-                "creatEventsForSchedule", "creatEventsForSchedule"
+                "getNextEvent", "getNextEvent",
+                "createEventsForSchedule", "createEventsForSchedule"
         ), update.getMessage().getChatId());
     }
 

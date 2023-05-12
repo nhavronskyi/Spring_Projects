@@ -26,15 +26,11 @@ public class GServiceImpl implements GService {
         return sheets.getSchedule();
     }
 
-    public List<String> getEvents() {
-        return calendar.getEvents();
+    public String getNextEvent() {
+        return calendar.getNextEvent();
     }
 
-    public void createDemoEvent() {
-        calendar.createAnEvent("demo", "demo", new DateTime("2023-05-10T09:00:00"), new DateTime("2023-05-10T10:00:00"));
-    }
-
-    public void creatEventsForSchedule() {
+    public void createEventsForSchedule() {
         LocalDate localDate = LocalDate.now().with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
         for (Map.Entry<String, List<String>> stringListEntry : sheets.getSchedule().entrySet()) {
 
@@ -54,11 +50,10 @@ public class GServiceImpl implements GService {
 
 
                         Object[] time = Arrays.stream(data[1].toString().split("-")).map(String::trim).toArray();
-
                         calendar.createAnEvent(title
                                 , teacher
-                                , new DateTime(lDate + "T" + time[0].toString() + ":00")
-                                , new DateTime(lDate + "T" + time[1].toString() + ":00")
+                                , new DateTime(lDate + "T" + time[0].toString() + ":00" + "+02:00")
+                                , new DateTime(lDate + "T" + time[1].toString() + ":00" + "+02:00")
                         );
                     }
                 }

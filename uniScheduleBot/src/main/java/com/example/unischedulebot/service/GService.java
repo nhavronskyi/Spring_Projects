@@ -6,9 +6,7 @@ import java.util.Map;
 public interface GService {
     Map<String, List<String>> getSchedule();
 
-    List<String> getEvents();
+    String getNextEvent();
 
-    void createDemoEvent();
-
-    void creatEventsForSchedule();
+    void createEventsForSchedule();
 }

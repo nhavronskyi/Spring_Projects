@@ -23,17 +23,12 @@ public class GCloudController {
     }
 
     @GetMapping("/calendar")
-    public List<String> getEvents() {
-        return gService.getEvents();
-    }
-
-    @PostMapping("demo")
-    public void createDemoEvent() {
-        gService.createDemoEvent();
+    public String getNextEvent() {
+        return gService.getNextEvent();
     }
 
     @PostMapping("/integration")
-    public void creatEventsForSchedule() {
-        gService.creatEventsForSchedule();
+    public void createEventsForSchedule() {
+        gService.createEventsForSchedule();
     }
 }
