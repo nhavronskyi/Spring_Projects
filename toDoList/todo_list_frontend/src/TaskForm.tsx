@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import TodoTask from "./TodoTask";
 
 export function TaskForm() {
     const [title, setTitle] = useState("");
@@ -40,6 +41,7 @@ export function TaskForm() {
                     Add Task
                 </button>
             </form>
+            <TodoTask/>
         </div>
     );
 }
